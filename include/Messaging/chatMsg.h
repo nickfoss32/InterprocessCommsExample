@@ -1,12 +1,12 @@
 #pragma once
 
-#include <stdint.h>
 #include <string>
-
-#include <boost/serialization/string.hpp>
+#include <stdint.h>
+#include <boost/serialization/base_object.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 #include "baseMsg.h"
-
 
 class ChatMessage : public BaseMessage
 {
@@ -14,21 +14,12 @@ class ChatMessage : public BaseMessage
 	
 		static constexpr uint8_t CHAT_MSG_MT = 1;
 
-		ChatMessage() :
-			BaseMessage(CHAT_MSG_MT)
-		{ }
+		ChatMessage();
+		ChatMessage(std::string data);
 
-		ChatMessage(std::string data) :
-			BaseMessage(CHAT_MSG_MT)
-		{ }
+		virtual ~ChatMessage();
 
-		virtual ~ChatMessage()
-		{ }
-
-		const std::string getData() const
-		{
-			return data_;
-		}
+		const std::string getData() const;
 
 	private:
 
@@ -42,6 +33,6 @@ class ChatMessage : public BaseMessage
 		void serialize(Archive & ar, const unsigned int version)
 		{
 			ar & boost::serialization::base_object<BaseMessage>(*this);
-			ar & BOOST_SERIALIZATION_NVP(data_);
+			ar & data_;
 		}
 };
